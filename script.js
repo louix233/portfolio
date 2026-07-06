@@ -1,4 +1,28 @@
 // ==========================================================
+// INTRO / WELCOME ANIMATION
+// ==========================================================
+(function initIntro() {
+  const overlay = document.getElementById('intro-overlay');
+  if (!overlay) return;
+
+  // After all animations finish (~2s), trigger the slide-up exit
+  const exitDelay = 2400;
+  const removDelay = exitDelay + 750; // matches CSS transition duration
+
+  setTimeout(() => {
+    overlay.classList.add('outro');
+  }, exitDelay);
+
+  setTimeout(() => {
+    overlay.classList.add('hidden');
+    document.body.style.overflow = ''; // restore scroll
+  }, removDelay);
+
+  // Prevent scrolling during intro
+  document.body.style.overflow = 'hidden';
+})();
+
+// ==========================================================
 // THEME TOGGLE (persisted in localStorage)
 // ==========================================================
 (function initTheme() {
