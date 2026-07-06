@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+
 
 /* ============================================================
    VARIABLES & RESET
@@ -378,6 +380,8 @@ ul { list-style: none; }
    ============================================================ */
 .site-footer { background: var(--sidebar-bg); border-top: 1px solid var(--border); padding: 1.5rem 4.5rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; color: var(--muted); }
 .footer-back:hover { color: var(--accent); }
+.footer-code code { font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--muted); }
+.footer-code .code-string { color: #86efac; }
 
 /* ============================================================
    RESPONSIVE
