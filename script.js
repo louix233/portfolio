@@ -105,7 +105,9 @@
   const sections = [
     { el: document.getElementById('home'), id: 'home' },
     { el: document.getElementById('about'), id: 'about' },
+    { el: document.getElementById('experience'), id: 'experience' },
     { el: document.getElementById('skills'), id: 'skills' },
+    { el: document.getElementById('education'), id: 'education' },
     { el: document.getElementById('projects'), id: 'projects' },
     { el: document.getElementById('contact'), id: 'contact' },
   ];
@@ -125,6 +127,32 @@
   sections.forEach(({ el }) => {
     if (el) observer.observe(el);
   });
+})();
+
+// ==========================================================
+// TIMELINE ANIMATION (scroll-triggered)
+// ==========================================================
+(function initTimelineAnimation() {
+  const items = document.querySelectorAll('.timeline-item');
+  if (!items.length) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          // Stagger each item by 150ms
+          const delay = Array.from(items).indexOf(entry.target) * 150;
+          setTimeout(() => {
+            entry.target.classList.add('tl-visible');
+          }, delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+
+  items.forEach((item) => observer.observe(item));
 })();
 
 // ==========================================================
@@ -170,7 +198,7 @@
     });
   });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     let isValid = true;
@@ -188,10 +216,37 @@
       return;
     }
 
-    status.textContent = `Thanks! Your message has been sent — I'll reply as soon as I can.`;
-    status.className = 'form-status success';
-    form.reset();
-    Object.values(fields).forEach((field) => showFieldError(field, ''));
+    // Show loading state
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Sending…';
+    submitBtn.disabled = true;
+    status.className = 'form-status';
+
+    try {
+      const response = await fetch('https://formspree.io/f/xppzanwy', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form),
+      });
+
+      if (response.ok) {
+        status.textContent = `Message sent! I'll get back to you as soon as I can.`;
+        status.className = 'form-status success';
+        form.reset();
+        Object.values(fields).forEach((field) => showFieldError(field, ''));
+      } else {
+        const data = await response.json();
+        status.textContent = data?.errors?.map(e => e.message).join(', ') || 'Something went wrong. Please try again.';
+        status.className = 'form-status error';
+      }
+    } catch {
+      status.textContent = 'Network error — please check your connection and try again.';
+      status.className = 'form-status error';
+    } finally {
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+    }
   });
 })();
 
