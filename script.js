@@ -198,6 +198,8 @@
     });
   });
 
+  let statusTimeout;
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -209,6 +211,8 @@
     });
 
     if (!isValid) {
+      if (statusTimeout) clearTimeout(statusTimeout);
+      status.style.opacity = '1';
       status.textContent = 'Please fix the highlighted fields before sending.';
       status.className = 'form-status error';
       const firstInvalid = Object.values(fields).find((f) => f.error.textContent);
@@ -221,6 +225,8 @@
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Sending…';
     submitBtn.disabled = true;
+    if (statusTimeout) clearTimeout(statusTimeout);
+    status.style.opacity = '1';
     status.className = 'form-status';
 
     try {
@@ -233,14 +239,29 @@
       if (response.ok) {
         status.textContent = `Message sent! I'll get back to you as soon as I can.`;
         status.className = 'form-status success';
+        status.style.opacity = '1';
         form.reset();
         Object.values(fields).forEach((field) => showFieldError(field, ''));
+
+        if (statusTimeout) clearTimeout(statusTimeout);
+        statusTimeout = setTimeout(() => {
+          status.style.opacity = '0';
+          setTimeout(() => {
+            status.className = 'form-status';
+            status.textContent = '';
+            status.style.opacity = '';
+          }, 400);
+        }, 5000);
       } else {
+        if (statusTimeout) clearTimeout(statusTimeout);
+        status.style.opacity = '1';
         const data = await response.json();
         status.textContent = data?.errors?.map(e => e.message).join(', ') || 'Something went wrong. Please try again.';
         status.className = 'form-status error';
       }
     } catch {
+      if (statusTimeout) clearTimeout(statusTimeout);
+      status.style.opacity = '1';
       status.textContent = 'Network error — please check your connection and try again.';
       status.className = 'form-status error';
     } finally {

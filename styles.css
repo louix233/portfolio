@@ -393,9 +393,33 @@ ul { list-style: none; }
 .form-row input:focus, .form-row textarea:focus { border-color: var(--accent); background: rgba(var(--accent-rgb),0.04); }
 .form-row textarea { min-height: 120px; resize: vertical; }
 .form-error { font-size: 0.72rem; color: #EF4444; min-height: 1em; }
-.form-status { font-size: 0.83rem; padding: 0.75rem 1rem; border-radius: 8px; display: none; }
-.form-status.success { display: block; background: rgba(34,197,94,0.1); color: #22C55E; border: 1px solid rgba(34,197,94,0.2); }
-.form-status.error { display: block; background: rgba(239,68,68,0.1); color: #EF4444; border: 1px solid rgba(239,68,68,0.2); }
+.form-status {
+  font-size: 0.88rem;
+  padding: 0.6rem 0;
+  display: none;
+  border-radius: 0;
+  border: none;
+  outline: none;
+  transition: opacity 0.4s ease;
+}
+.form-status.success {
+  display: block;
+  background: transparent;
+  color: #10b981;
+  border: none;
+  outline: none;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.form-status.error {
+  display: block;
+  background: transparent;
+  color: #EF4444;
+  border: none;
+  outline: none;
+  font-weight: 500;
+  line-height: 1.5;
+}
 
 /* ============================================================
    DUAL IDENTITY HERO BADGES
